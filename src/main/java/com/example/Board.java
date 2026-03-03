@@ -68,7 +68,19 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
       //for (.....)  
 //        	populate the board with squares here. Note that the board is composed of 64 squares alternating from 
 //        	white to black.
-        
+
+        for(int i = 0; i < 8; i++) {
+        	for(int j = 0; j < 8; j++) {
+        		if((i+j) % 2 == 0) {
+        			board[i][j] = new Square(this,true,i,j);
+        		}
+        		else {
+        			board[i][j] = new Square(this,false,i,j);
+        		}
+        		this.add(board[i][j]);
+        	}
+
+        }
         
         initializePieces();
         
@@ -88,9 +100,10 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 	//it's up to you how you wish to arrange your pieces.
     void initializePieces() {
     	
-    	// board[0][0].put(new Piece(true, path+ RESOURCES_WKING_PNG));
-        
-
+        // (0,0) is the top left corner of the board. The first index is the row and the second index is the column.
+    	board[0][4].put(new Piece(true, RESOURCES_WKING_PNG));
+        board[4][3].put(new Piece(false, RESOURCES_BQUEEN_PNG));
+        board[4][5].put(new Piece(false, RESOURCES_BQUEEN_PNG));
     }
 
     public Square[][] getSquareArray() {
@@ -154,7 +167,15 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
         if (sq.isOccupied()) {
             currPiece = sq.getOccupyingPiece();
             fromMoveSquare = sq;
+            for(Square s: currPiece.getLegalMoves(this,fromMoveSquare)){
+                s.setBorder(BorderFactory.createLineBorder(Color.green));
+            }
+            for(Square s: currPiece.getControlledSquares(board,fromMoveSquare)){
+                s.setBorder(BorderFactory.createLineBorder(Color.blue));
+            }    
+
             if (currPiece.getColor() != whiteTurn)
+
                 return;
             sq.setDisplay(false);
         }
@@ -168,10 +189,26 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
     @Override
     public void mouseReleased(MouseEvent e) {
         Square endSquare = (Square) this.getComponentAt(new Point(e.getX(), e.getY()));
-        
+        for(Square[] row: board){
+            for(Square s: row){
+                s.setBorder(BorderFactory.createEmptyBorder());
+            }
+        }
         //using currPiece
         
-       
+        if(fromMoveSquare != null && currPiece.getLegalMoves(this, fromMoveSquare).contains(endSquare)){
+            endSquare.put(currPiece);
+            fromMoveSquare.removePiece();
+            
+        }
+
+        //if(fromMoveSquare != null && currPiece.getControlledSquares(board,fromMoveSquare).contains(endSquare)){
+        //    endSquare.put(currPiece);
+        //    fromMoveSquare.removePiece();
+        //   
+        //}
+        
+        
         fromMoveSquare.setDisplay(true);
         currPiece = null;
         repaint();

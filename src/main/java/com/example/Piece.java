@@ -50,7 +50,17 @@ public class Piece {
     //return a list of every square that is "controlled" by this piece. A square is controlled
     //if the piece capture into it legally.
     public ArrayList<Square> getControlledSquares(Square[][] board, Square start) {
-     return null;
+         ArrayList<Square> controlledSquares = new ArrayList<>();
+        if(start.getRow()<7){
+            
+            // Square control = board[start.getRow()+1][start.getCol()+1];
+            // controlledSquares.add(control);
+            controlledSquares.add(board[start.getRow()+1][start.getCol()+1]);
+            controlledSquares.add(board[start.getRow()+1][start.getCol()-1]);
+ 
+        }
+
+        return controlledSquares;
     }
     
 
@@ -61,6 +71,32 @@ public class Piece {
     //please note that your piece must have some sort of logic. Just being able to move to every square on the board is not
     //going to score any points.
     public ArrayList<Square> getLegalMoves(Board b, Square start){
-    	return null;
+        
+        ArrayList<Square> moves = new ArrayList<>();
+        if(color == true){
+            if(start.getRow()<7){
+                
+                Square up = b.getSquareArray()[start.getRow()+1][start.getCol()];
+                moves.add(up);
+                
+            
+            //check down left
+            if(start.getCol()>0&& b.getSquareArray()[start.getRow()+1][start.getCol()-1].isOccupied() && b.getSquareArray()[start.getRow()+1][start.getCol()-1].getOccupyingPiece().getColor() != color){
+                Square downLeft = b.getSquareArray()[start.getRow()+1][start.getCol()-1];
+                moves.add(downLeft);
+            }
+            //check down right
+
+            if(start.getCol()>0&& b.getSquareArray()[start.getRow()+1][start.getCol()+1].isOccupied() && b.getSquareArray()[start.getRow()+1][start.getCol()+1].getOccupyingPiece().getColor() != color){
+                Square downRight = b.getSquareArray()[start.getRow()+1][start.getCol()+1];
+                moves.add(downRight);
+            }
+
+
+            }
+        }
+    	return moves;
+
     }
+    
 }
